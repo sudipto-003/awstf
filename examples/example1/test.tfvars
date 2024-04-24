@@ -1,5 +1,5 @@
 bucket_name = "test"
-bucket_prefix_name = ""
+bucket_prefix_name = "blabla"
 bucket_tags = {
   "appearance" = "test1"
 }

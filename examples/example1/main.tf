@@ -40,7 +40,22 @@ module "bucket" {
   source = "../../modules/s3"
 
   baltir_nam = var.bucket_name
+  baltir_tag = var.bucket_tags
+  balti_tala_dewa = var.object_lock_enabled
+}
+
+output "bucket_arn" {
+  value = module.bucket.notun_baltir_arn
+}
+
+module "another_bucket" {
+  source = "../../modules/s3"
+
   baltir_prefix_name = var.bucket_prefix_name
   baltir_tag = var.bucket_tags
   balti_tala_dewa = var.object_lock_enabled
+}
+
+output "another_bucket_arn" {
+  value = module.another_bucket.notun_baltir_arn
 }
