@@ -12,3 +12,25 @@ variable "role_name" {
   type    = string
   default = "Role"
 }
+
+variable "function_config" {
+  type = map(any)
+}
+
+variable "code_source" {
+  type = string
+}
+
+variable "s3_info" {
+  type = map(string)
+}
+
+variable "function_env_vars" {
+  type = map(any)
+  default = {}
+}
+
+variable "function_permissions" {
+  type = map(any)
+  default = {}
+}

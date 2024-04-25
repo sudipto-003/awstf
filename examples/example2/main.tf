@@ -43,3 +43,15 @@ module "role" {
 
   trust_statements = var.trust_policy_statements
 }
+
+
+module "lambda_function" {
+  source = "../../modules/lambda"
+
+  lambda_role = module.role.role_arn
+
+  code_source = var.code_source
+  lambda_config = var.function_config
+  lambda_env = var.function_env_vars
+  s3_source = var.s3_info
+}
