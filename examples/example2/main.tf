@@ -36,6 +36,18 @@ provider "aws" {
   }
 }
 
+module "source_bucket" {
+  source = "../../modules/s3"
+
+  baltir_nam = var.source_bucket_name
+}
+
+module "destination_bucket" {
+  source = "../../modules/s3"
+  
+  baltir_nam = var.destination_bucket_name
+}
+
 module "role" {
   source            = "../../modules/iam_lambda_role"
   lambda_role       = var.role_name
@@ -44,6 +56,10 @@ module "role" {
   trust_statements = var.trust_policy_statements
 }
 
+locals {
+  lambda_env_variable = merge(var.function_env_vars, {"DESTINATION_BUCKET" = module.destination_bucket.notun_baltir_name})
+  lambda_permissions = merge(var.function_permissions, {"source_arn" = module.source_bucket.notun_baltir_arn})
+}
 
 module "lambda_function" {
   source = "../../modules/lambda"
@@ -52,6 +68,7 @@ module "lambda_function" {
 
   code_source = var.code_source
   lambda_config = var.function_config
-  lambda_env = var.function_env_vars
+  lambda_env = local.lambda_env_variable
   s3_source = var.s3_info
+  lambda_permissions = local.lambda_permissions
 }

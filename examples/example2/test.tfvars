@@ -17,8 +17,7 @@ function_config = {
 }
 
 function_env_vars = {
-  "DESTINATION_BUCKET" = "destBucket"
-  "UPLOAD_FILE_PREFIX" = "red"
+  "UPLOAD_FILE_PREFIX" = "fear"
   "WORD_TO_REPLACE" = "fight"
   "REPLACEMENT_WORD" = "fear"
 }
@@ -28,3 +27,11 @@ s3_info = {
   "key" = "lambda_fight"
 }
 
+function_permissions = {
+  "action" = "lambda:InvokeFunction"
+  "principal" = "s3.amazonaws.com"
+  "source_account" = "000000000000"
+}
+
+source_bucket_name = "red"
+destination_bucket_name = "green"
