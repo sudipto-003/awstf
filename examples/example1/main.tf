@@ -37,25 +37,20 @@ provider "aws" {
 }
 
 module "bucket" {
-  source = "../../modules/s3"
+  source = "../../modules/bucket"
 
-  baltir_nam = var.bucket_name
-  baltir_tag = var.bucket_tags
-  balti_tala_dewa = var.object_lock_enabled
+  bucket_using_prefix = var.bucket_create_using_prefix
+  bucket_name = var.bucket_name
+  bucket_force_destroy = var.bucket_force_destroy
+  bucket_object_lock = var.object_lock_enabled
+
+  bucket_tags = var.bucket_tags
 }
 
 output "bucket_arn" {
-  value = module.bucket.notun_baltir_arn
+  value = module.bucket.new_bucket_arn
 }
 
-module "another_bucket" {
-  source = "../../modules/s3"
-
-  baltir_prefix_name = var.bucket_prefix_name
-  baltir_tag = var.bucket_tags
-  balti_tala_dewa = var.object_lock_enabled
-}
-
-output "another_bucket_arn" {
-  value = module.another_bucket.notun_baltir_arn
+output "bucket_name" {
+  value = module.bucket.new_bucket_name
 }
