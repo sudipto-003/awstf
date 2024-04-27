@@ -37,28 +37,34 @@ provider "aws" {
 }
 
 module "source_bucket" {
-  source = "../../modules/s3"
+  source = "../../modules/bucket"
 
-  baltir_nam = var.source_bucket_name
+  bucket_name = var.source_bucket_name
 }
 
 module "destination_bucket" {
-  source = "../../modules/s3"
+  source = "../../modules/bucket"
   
-  baltir_nam = var.destination_bucket_name
+  bucket_name = var.destination_bucket_name
+}
+
+locals {
+  source_bucket_statements = concat(var.policy_statements[0], [module.source_bucket.new_bucket_arn])
+  destination_bucket_statements = concat(var.policy_statements[1], [module.destination_bucket.new_bucket_arn])
+  statements = [local.source_bucket_statements, local.destination_bucket_statements]
 }
 
 module "role" {
   source            = "../../modules/iam_lambda_role"
   lambda_role       = var.role_name
-  policy_statements = var.policy_statements
+  policy_statements = local.statements
 
   trust_statements = var.trust_policy_statements
 }
 
 locals {
-  lambda_env_variable = merge(var.function_env_vars, {"DESTINATION_BUCKET" = module.destination_bucket.notun_baltir_name})
-  lambda_permissions = merge(var.function_permissions, {"source_arn" = module.source_bucket.notun_baltir_arn})
+  lambda_env_variable = merge(var.function_env_vars, {"DESTINATION_BUCKET" = module.destination_bucket.new_bucket_name})
+  lambda_permissions = merge(var.function_permissions, {"source_arn" = module.source_bucket.new_bucket_arn})
 }
 
 module "lambda_function" {
@@ -71,4 +77,15 @@ module "lambda_function" {
   lambda_env = local.lambda_env_variable
   s3_source = var.s3_info
   lambda_permissions = local.lambda_permissions
+}
+
+locals {
+  notifications = [ {"arn": module.lambda_function.function_arn, "events": "s3:ObjectCreated:Put"}]
+}
+
+module "bucket_notifications" {
+  source = "../../modules/bucket_notifications"
+
+  bucket_to_set_notifications = module.source_bucket.new_bucket_name
+  lambda_functions = local.notifications
 }
