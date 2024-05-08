@@ -1,12 +1,12 @@
 role_name = "LambdaRole"
 
 policy_statements = [
-  ["Allow", "s3:GetObject,s3:ListObject"],
-  ["Allow", "s3:PutObject"]
+  {"effect" = "Allow", "actions" = "s3:GetObject,s3:ListObject"},
+  {"effect" = "Allow", "actions" = "s3:PutObject"}
 ]
 
 trust_policy_statements = [
-  ["Allow", "sts.AssumeRole", [["Service", "lambda.amazonaws.com"]]]
+  {"effect" = "Allow", "actions" = "sts.AssumeRole", "principals" = [["Service", "lambda.amazonaws.com"]]}
 ]
 
 code_source = "s3"
@@ -24,7 +24,7 @@ function_env_vars = {
 
 s3_info = {
   "bucket" = "lambdasource"
-  "key" = "lambda_fight"
+  "key" = "lambda_fight.zip"
 }
 
 function_permissions = {

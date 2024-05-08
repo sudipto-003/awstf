@@ -49,20 +49,10 @@ module "destination_bucket" {
 }
 
 locals {
-  source_bucket_statements = concat(var.policy_statements[0], [module.source_bucket.new_bucket_arn])
-  destination_bucket_statements = concat(var.policy_statements[1], [module.destination_bucket.new_bucket_arn])
+  source_bucket_statements = merge(var.policy_statements[0], {"resources" = module.source_bucket.new_bucket_arn})
+  destination_bucket_statements = merge(var.policy_statements[1], {"resources" = module.destination_bucket.new_bucket_arn})
   statements = [local.source_bucket_statements, local.destination_bucket_statements]
-}
 
-module "role" {
-  source            = "../../modules/iam_lambda_role"
-  lambda_role       = var.role_name
-  policy_statements = local.statements
-
-  trust_statements = var.trust_policy_statements
-}
-
-locals {
   lambda_env_variable = merge(var.function_env_vars, {"DESTINATION_BUCKET" = module.destination_bucket.new_bucket_name})
   lambda_permissions = merge(var.function_permissions, {"source_arn" = module.source_bucket.new_bucket_arn})
 }
@@ -70,7 +60,11 @@ locals {
 module "lambda_function" {
   source = "../../modules/lambda"
 
-  lambda_role = module.role.role_arn
+  role = var.role_name
+  create_role = true
+  policy_permissions = local.statements
+  role_trust_permissions = var.trust_policy_statements
+  attach_policy = true
 
   code_source = var.code_source
   lambda_config = var.function_config

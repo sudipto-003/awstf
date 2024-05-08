@@ -1,11 +1,11 @@
 variable "policy_statements" {
-  type    = list(list(string))
-  default = null
+  type    = list(map(any))
+  default = [ ]
 }
 
 variable "trust_policy_statements" {
   type    = list(any)
-  default = []
+  default = [ ]
 }
 
 variable "role_name" {
