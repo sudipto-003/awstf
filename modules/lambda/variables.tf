@@ -1,6 +1,31 @@
-variable "lambda_role" {
+variable "create_role" {
+    type = bool
+    default = false
+}
+
+variable "role" {
     type = string
     nullable = false
+}
+
+variable "policy_permissions" {
+    type = list(map(any))
+    default = [ ]
+}
+
+variable "role_trust_permissions" {
+    type = list(any)
+    default = [ ]   
+}
+
+variable "attach_policy" {
+    type = bool
+    default = true
+}
+
+variable "attach_managed_policy" {
+    type = list(string)
+    default = [  ]
 }
 
 variable "lambda_config" {

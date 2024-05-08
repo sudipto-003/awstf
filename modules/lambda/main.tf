@@ -1,5 +1,27 @@
+module "lambda_role_policy" {
+    source = "../iam_policy"
+    
+    count = var.create_role && length(var.policy_permissions) != 0 && var.attach_policy ? 1 : 0
+    policy_statements = var.policy_permissions
+}
+
+module "lambda_role" {
+    source = "../iam_role"
+
+    count = var.create_role ? 1 : 0
+    role_name = var.role
+    assume_role_policy_statements = var.role_trust_permissions
+
+    
+    attach_policy = var.attach_policy
+    attached_managed_policies = var.attach_managed_policy
+
+    policy_arns = module.lambda_role_policy[*].policy_arn
+}
+
+
 resource "aws_lambda_function" "lambda" {
-    role = var.lambda_role
+    role = var.create_role ? one(module.lambda_role[*].role_arn) : var.role
 
     function_name = var.lambda_config["function_name"]
     handler = var.lambda_config["handler"]
