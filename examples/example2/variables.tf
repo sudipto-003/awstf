@@ -4,7 +4,7 @@ variable "policy_statements" {
 }
 
 variable "trust_policy_statements" {
-  type    = list(any)
+  type    = list(map(string))
   default = [ ]
 }
 

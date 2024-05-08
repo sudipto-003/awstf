@@ -6,7 +6,7 @@ policy_statements = [
 ]
 
 trust_policy_statements = [
-  {"effect" = "Allow", "actions" = "sts.AssumeRole", "principals" = [["Service", "lambda.amazonaws.com"]]}
+  {"effect" = "Allow", "actions" = "sts.AssumeRole", "principals" = "Service+lambda.amazonaws.com"}
 ]
 
 code_source = "s3"

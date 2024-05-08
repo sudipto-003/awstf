@@ -6,10 +6,10 @@ data "aws_iam_policy_document" "role_trust_policy" {
       actions = split(",", try(statement.value["actions"], ""))
 
       dynamic "principals" {
-        for_each = try(statement.value["principals"], [])
+        for_each = split("|", try(statement.value["principals"], ""))
         content {
-          type        = try(principals.value[0], "Service")
-          identifiers = split(",", try(principals.value[1], ""))
+          type        = split("+", principals.value)[0]
+          identifiers = split(",", split("+", principals.value)[1])
         }
       }
     }

@@ -40,12 +40,14 @@ module "source_bucket" {
   source = "../../modules/bucket"
 
   bucket_name = var.source_bucket_name
+  bucket_force_destroy = true
 }
 
 module "destination_bucket" {
   source = "../../modules/bucket"
   
   bucket_name = var.destination_bucket_name
+  bucket_force_destroy = true
 }
 
 locals {
