@@ -48,4 +48,8 @@ resource "aws_dynamodb_table" "this" {
             non_key_attributes = local_secondary_index.value._projection == "INCLUDE" ? split(",", try(local_secondary_index.value._add_attributes, "")) : null
         }
     }
+
+    lifecycle {
+        ignore_changes = [ local_secondary_index ]
+    }
 }
